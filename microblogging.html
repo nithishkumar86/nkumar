@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microblog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body{ 
+            font-family: Arial, sans-serif;
+            color:rgb(0, 0, 255); 
+        }
+        .post {
+            border: 1px solid #ccc; padding: 10px; margin: 10px 0; 
+        }
+
+        .icon {
+            font-size: 24px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .like {
+            color: green;
+        }
+        .dislike {
+            color: red;
+        }
+    </style>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body bgcolor="aquamarine">
+    <h1>Microblog</h1>
+    <img src="C:\html & css\image.jpeg\runout.jpg">
+    <form id="postForm">
+        <label>please give your comment</label>
+        <br><br>
+        <textarea id="content" placeholder="What's on your mind?" rows="10" cols="40"></textarea>
+        <br><br>
+        <button type="submit">Post</button>
+        <br><br>
+        <!-- Like and Dislike symbols -->
+        <i class="fas fa-thumbs-up icon like"></i>
+        <i class="fas fa-thumbs-down icon dislike"></i>
+    </form>
+    <div id="posts"></div>
+
+    <script>
+        document.getElementById('postForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const content = document.getElementById('content').value;
+            const response = await fetch('/posts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
+
+
+            });
+            const post = await response.json();
+            document.getElementById('posts').innerHTML += `<div class="post">${post.content}</div>`;
+            document.getElementById('content').value = '';
+        });
+
+        async function loadPosts() {
+            const response = await fetch('/posts');
+            const posts = await response.json();
+            document.getElementById('posts').innerHTML = posts.map(post => `<div class="post">${post.content}</div>`).join('');
+        }
+        loadPosts();
+    </script>
+</body>
+</html>
+
